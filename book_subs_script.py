@@ -1,4 +1,3 @@
-import os
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -9,9 +8,18 @@ from selenium.webdriver.support import expected_conditions as EC
 # Set the path to your ChromeDriver
 chromedriver_path = "C:/Users/jnole/Documents/chromedriver-win64/chromedriver.exe"
 
+
+
 # Login credentials
-username = "ENTER_USERNAME"
-password = "ENTER_PASSWORD"
+file_path = 'C:\\Users\\jnole\\Documents\\1.txt'
+
+def read_confidential(file_path):
+    with open(file_path, 'r') as file:
+        # Read username and password from file
+        username = file.readline().strip()
+        password = file.readline().strip()
+        company_website = file.readline().strip()
+    return username, password, company_website
 
 # Set up the Chrome driver service
 service = Service(executable_path=chromedriver_path)
@@ -21,9 +29,10 @@ driver = webdriver.Chrome(service=service)
 
 
 def login():
+    username, password, company_website = read_confidential(file_path)
     try:
         # Open the login page
-        driver.get("https://spark.ignite-reading.com/")
+        driver.get(company_website)
 
         # Find username field and enter username
         username_field = WebDriverWait(driver, 10).until(
