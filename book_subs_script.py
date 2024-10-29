@@ -1,4 +1,5 @@
 import time
+import os
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -6,20 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 # Set the path to your ChromeDriver
-chromedriver_path = "C:/Users/jnole/Documents/chromedriver-win64/chromedriver.exe"
-
-
-
-# Login credentials
-file_path = 'C:\\Users\\jnole\\Documents\\1.txt'
-
-def read_confidential(file_path):
-    with open(file_path, 'r') as file:
-        # Read username and password from file
-        username = file.readline().strip()
-        password = file.readline().strip()
-        company_website = file.readline().strip()
-    return username, password, company_website
+chromedriver_path = "C:/Users/jnole/OneDrive/Documents/chromedriver-win64/chromedriver.exe"
 
 # Set up the Chrome driver service
 service = Service(executable_path=chromedriver_path)
@@ -27,9 +15,14 @@ service = Service(executable_path=chromedriver_path)
 # Create a new Chrome session
 driver = webdriver.Chrome(service=service)
 
+def read_confidential():
+    username = os.getenv('COMPANY_LOGIN_EMAIL')
+    password = os.getenv('COMPANY_LOGIN_PASSWORD')
+    company_website = os.getenv('COMPANY_WEBSITE')
+    return username, password, company_website
 
 def login():
-    username, password, company_website = read_confidential(file_path)
+    username, password, company_website = read_confidential()
     try:
         # Open the login page
         driver.get(company_website)
