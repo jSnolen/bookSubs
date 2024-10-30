@@ -47,7 +47,6 @@ def login():
         print(f"Error during login: {e}")
         driver.quit()
 
-
 def navigate_to_calendars():
     try:
         # Wait for the login process to complete and the next page to load
@@ -78,7 +77,6 @@ def navigate_to_calendars():
     except Exception as e:
         print(f"Error during navigation: {e}")
         driver.quit()
-
 
 def process_opportunities():
     wait = WebDriverWait(driver, 10)
@@ -116,7 +114,6 @@ def process_opportunities():
         if claim_clicks >= 1:
             print("Claim attempted!")
             break
-
 
 try:
     login()
