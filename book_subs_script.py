@@ -27,6 +27,7 @@ def login():
         # Open the login page
         driver.get(company_website)
         driver.maximize_window()
+        time.sleep(1)
         driver.minimize_window()
 
         # Find username field and enter username
