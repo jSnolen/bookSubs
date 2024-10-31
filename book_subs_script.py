@@ -15,11 +15,13 @@ service = Service(executable_path=chromedriver_path)
 # Create a new Chrome session
 driver = webdriver.Chrome(service=service)
 
+
 def read_confidential():
     username = os.getenv('COMPANY_LOGIN_EMAIL')
     password = os.getenv('COMPANY_LOGIN_PASSWORD')
     company_website = os.getenv('COMPANY_WEBSITE')
     return username, password, company_website
+
 
 def login():
     username, password, company_website = read_confidential()
@@ -46,6 +48,7 @@ def login():
     except Exception as e:
         print(f"Error during login: {e}")
         driver.quit()
+
 
 def navigate_to_calendars():
     try:
@@ -78,15 +81,17 @@ def navigate_to_calendars():
         print(f"Error during navigation: {e}")
         driver.quit()
 
-def process_opportunities():
+
+def set_range():
     wait = WebDriverWait(driver, 10)
 
     try:
         nine_am_element = wait.until(
             EC.presence_of_element_located((By.XPATH, "//*[contains(text(), '9 AM')]"))
         )
-        nine_am_position = nine_am_element.location['y']
+        nine_am_position_min = nine_am_element.location['y']
         print("9 AM found.")
+
     except Exception as e:
         print(f"9 AM not found or error: {e}")
         driver.quit()
@@ -96,20 +101,22 @@ def process_opportunities():
         three_pm_element = wait.until(
             EC.presence_of_element_located((By.XPATH, "//*[contains(text(), '3 PM')]"))
         )
-        three_pm_position = three_pm_element.location['y']
+        three_pm_position_max = three_pm_element.location['y']
         print("3 PM found.")
     except Exception as e:
         print(f"3 PM not found or error: {e}")
         driver.quit()
         return
 
+    return nine_am_position_min, three_pm_position_max
 
 
+def process_opportunities(nine_am_position, three_pm_position):
     claim_clicks = 0
     while True:
         time.sleep(1)
         sub_opportunities = driver.find_elements(By.XPATH, "//*[contains(text(),'Sub Opportunity')]")
-        if sub_opportunities and claim_clicks <= 2:
+        if sub_opportunities and claim_clicks < 2:
             for sub in sub_opportunities:
                 sub_position = sub.location['y']
                 if nine_am_position < sub_position < three_pm_position:
@@ -131,7 +138,8 @@ def process_opportunities():
 try:
     login()
     navigate_to_calendars()
-    process_opportunities()
+    min_position, max_position = set_range()
+    process_opportunities(min_position, max_position)
 finally:
     time.sleep(10)
     driver.quit()
