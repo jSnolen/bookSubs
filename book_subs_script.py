@@ -109,15 +109,17 @@ def process_opportunities():
     while True:
         time.sleep(1)
         sub_opportunities = driver.find_elements(By.XPATH, "//*[contains(text(),'Sub Opportunity')]")
-        if sub_opportunities and claim_clicks < 4:
+        if sub_opportunities and claim_clicks <= 2:
             for sub in sub_opportunities:
                 sub_position = sub.location['y']
-                if sub_position > nine_am_position & sub_position < three_pm_position:
+                if nine_am_position < sub_position < three_pm_position:
+                    print(f"Sub opportunity found at position: {sub_position}")
                     sub.click()
                     time.sleep(1)
                     claims = driver.find_elements(By.XPATH, "//*[contains(text(),'Claim')]")
                     if claims:
                         claims[0].click()
+                        print("Claim attempted!")
                         claim_clicks += 1
                         time.sleep(1)
                         break
@@ -125,9 +127,6 @@ def process_opportunities():
             driver.refresh()
             time.sleep(1)
 
-        if claim_clicks >= 1:
-            print("Claim attempted!")
-            break
 
 try:
     login()
