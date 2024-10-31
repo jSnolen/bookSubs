@@ -80,6 +80,18 @@ def navigate_to_calendars():
 
 def process_opportunities():
     wait = WebDriverWait(driver, 10)
+
+    try:
+        nine_am_element = wait.until(
+            EC.presence_of_element_located((By.XPATH, "//*[contains(text(), '9 AM')]"))
+        )
+        nine_am_position = nine_am_element.location['y']
+        print("9 AM found.")
+    except Exception as e:
+        print(f"9 AM not found or error: {e}")
+        driver.quit()
+        return
+
     try:
         three_pm_element = wait.until(
             EC.presence_of_element_located((By.XPATH, "//*[contains(text(), '3 PM')]"))
@@ -91,6 +103,8 @@ def process_opportunities():
         driver.quit()
         return
 
+
+
     claim_clicks = 0
     while True:
         time.sleep(1)
@@ -98,7 +112,7 @@ def process_opportunities():
         if sub_opportunities and claim_clicks < 4:
             for sub in sub_opportunities:
                 sub_position = sub.location['y']
-                if sub_position < three_pm_position:
+                if sub_position > nine_am_position & sub_position < three_pm_position:
                     sub.click()
                     time.sleep(1)
                     claims = driver.find_elements(By.XPATH, "//*[contains(text(),'Claim')]")
