@@ -56,9 +56,28 @@ def navigate_to_calendars():
         )
 
         # Find and click the button
-        calendars_button = driver.find_element(By.CSS_SELECTOR,
+        try:
+            calendars_button = driver.find_element(By.CSS_SELECTOR,
                                                'body > div:nth-child(2) > div.hidden.lg\\:flex.lg\\:w-64.lg\\:flex-col.lg\\:fixed.lg\\:inset-y-0 > div > div.flex-grow.mt-5.flex.flex-col > nav > a:nth-child(2)')
-        calendars_button.click()
+            calendars_button.click()
+        except NoSuchElementException:
+            print("Calendars button not found. Trying alternative selector.")
+            try:
+                # Fallback: Use provided CSS selector to locate and click the alternative element
+                alternative_element = driver.find_element(By.CSS_SELECTOR,
+                                                      "body > div:nth-child(2) > div.lg\\:pl-64 > div.lg\\:hidden.sticky.top-0.bg-white.flex.items-center.w-full.py-2.px-1.md\\:px-3.border-b.z-40 > div.absolute > button > svg > path")
+                alternative_element.click()
+                print("Alternative element clicked successfully.")
+
+                # Click the next element after the alternative element
+                next_element = driver.find_element(By.CSS_SELECTOR,
+                                               "body > div:nth-child(2) > div.relative.z-50.lg\\:hidden > div.fixed.inset-0.flex.max-h-screen > div.relative.max-w-xs.w-full.bg-white.pt-5.pb-4.flex-1.flex.flex-col > div.mt-2.flex.flex-col.overflow-y-auto.grow > div > nav > a.bg-gray-100.text-gray-900.group.rounded-md.py-2.px-2.flex.items-center.text-sm.font-medium")
+                next_element.click()
+                print("Next element clicked successfully.")
+            except NoSuchElementException:
+                print("Alternative element or next element not found.")
+                driver.quit()
+                return
 
         # Wait for the 'Calendar View' text to be clickable, and then click it
         calendar_view = WebDriverWait(driver, 10).until(
