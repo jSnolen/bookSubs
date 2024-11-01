@@ -152,7 +152,7 @@ def process_opportunities(nine_am_position, three_pm_position):
                             if elements:
                                 print(message)
                                 break
-                break
+
         else:
             driver.refresh()
             time.sleep(1)
