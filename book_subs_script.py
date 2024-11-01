@@ -152,30 +152,7 @@ def process_opportunities(nine_am_position, three_pm_position):
                             if elements:
                                 print(message)
                                 break
-
-                        try:
-                            nine_am_element = wait.until(
-                                EC.presence_of_element_located((By.XPATH, "//*[contains(text(), '9 AM')]"))
-                            )
-                            nine_am_position = nine_am_element.location['y']
-                            print("9 AM found.")
-                        except Exception as e:
-                            print(f"9 AM not found or error: {e}")
-                            driver.quit()
-                            return
-
-                        try:
-                            three_pm_element = wait.until(
-                                EC.presence_of_element_located((By.XPATH, "//*[contains(text(), '3 PM')]"))
-                            )
-                            three_pm_position = three_pm_element.location['y']
-                            print("3 PM found.")
-                        except Exception as e:
-                            print(f"3 PM not found or error: {e}")
-                            driver.quit()
-                            return
-                        break
-                    break
+                break
         else:
             driver.refresh()
             time.sleep(1)
