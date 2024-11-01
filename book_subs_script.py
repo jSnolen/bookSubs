@@ -117,6 +117,11 @@ def process_opportunities(nine_am_position, three_pm_position):
         time.sleep(2)
         sub_opportunities = driver.find_elements(By.XPATH, "//*[contains(text(),'Sub Opportunity')]")
         if sub_opportunities and claim_clicks < 3:
+
+            #scroll to bottom
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(2)
+
             for sub in sub_opportunities:
                 sub_position = sub.location['y']
                 if nine_am_position < sub_position < three_pm_position:
