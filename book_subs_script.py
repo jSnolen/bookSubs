@@ -122,7 +122,8 @@ def process_opportunities(nine_am_position, three_pm_position):
                 if nine_am_position < sub_position < three_pm_position:
                     print(f"Sub opportunity found at position: {sub_position}")
                     try:
-                        sub.click()
+                        # Click the sub opportunity using JavaScript
+                        driver.execute_script("arguments[0].click();", sub)
                         time.sleep(1)
                     except Exception as e:
                         print(f"There was an issue with the click: {e}")
@@ -135,14 +136,13 @@ def process_opportunities(nine_am_position, three_pm_position):
                             if elements:
                                 print(message)
                                 break
-
                     claims = driver.find_elements(By.XPATH, "//*[contains(text(),'Claim')]")
                     if claims:
-                        claims[0].click()
+                        # Click the claim button using JavaScript
+                        driver.execute_script("arguments[0].click();", claims[0])
                         print("Claim attempted!")
                         claim_clicks += 1
                         time.sleep(1)
-
                         error_messages = [
                             "Another tutor has already claimed this session.",
                             "There was an error claiming this session."
