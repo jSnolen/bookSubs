@@ -114,22 +114,68 @@ def set_range():
 def process_opportunities(nine_am_position, three_pm_position):
     claim_clicks = 0
     while True:
-        time.sleep(1)
+        time.sleep(2)
         sub_opportunities = driver.find_elements(By.XPATH, "//*[contains(text(),'Sub Opportunity')]")
-        if sub_opportunities and claim_clicks < 2:
+        if sub_opportunities and claim_clicks < 3:
             for sub in sub_opportunities:
                 sub_position = sub.location['y']
                 if nine_am_position < sub_position < three_pm_position:
                     print(f"Sub opportunity found at position: {sub_position}")
-                    sub.click()
-                    time.sleep(1)
+                    try:
+                        sub.click()
+                        time.sleep(1)
+                    except Exception as e:
+                        print(f"There was an issue with the click: {e}")
+                        error_messages = [
+                            "Another tutor has already claimed this session.",
+                            "There was an error claiming this session."
+                        ]
+                        for message in error_messages:
+                            elements = driver.find_elements(By.XPATH, f"//*[contains(text(),'{message}')]")
+                            if elements:
+                                print(message)
+                                break
+
                     claims = driver.find_elements(By.XPATH, "//*[contains(text(),'Claim')]")
                     if claims:
                         claims[0].click()
                         print("Claim attempted!")
                         claim_clicks += 1
                         time.sleep(1)
+
+                        error_messages = [
+                            "Another tutor has already claimed this session.",
+                            "There was an error claiming this session."
+                        ]
+                        for message in error_messages:
+                            elements = driver.find_elements(By.XPATH, f"//*[contains(text(),'{message}')]")
+                            if elements:
+                                print(message)
+                                break
+
+                        try:
+                            nine_am_element = wait.until(
+                                EC.presence_of_element_located((By.XPATH, "//*[contains(text(), '9 AM')]"))
+                            )
+                            nine_am_position = nine_am_element.location['y']
+                            print("9 AM found.")
+                        except Exception as e:
+                            print(f"9 AM not found or error: {e}")
+                            driver.quit()
+                            return
+
+                        try:
+                            three_pm_element = wait.until(
+                                EC.presence_of_element_located((By.XPATH, "//*[contains(text(), '3 PM')]"))
+                            )
+                            three_pm_position = three_pm_element.location['y']
+                            print("3 PM found.")
+                        except Exception as e:
+                            print(f"3 PM not found or error: {e}")
+                            driver.quit()
+                            return
                         break
+                    break
         else:
             driver.refresh()
             time.sleep(1)
