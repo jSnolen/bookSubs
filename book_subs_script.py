@@ -89,7 +89,7 @@ def set_range():
         nine_am_element = wait.until(
             EC.presence_of_element_located((By.XPATH, "//*[contains(text(), '9 AM')]"))
         )
-        nine_am_position_min = nine_am_element.location['y']
+        minimum_position = nine_am_element.location['y']
         print("9 AM found.")
 
     except Exception as e:
@@ -98,17 +98,17 @@ def set_range():
         return
 
     try:
-        three_pm_element = wait.until(
-            EC.presence_of_element_located((By.XPATH, "//*[contains(text(), '3 PM')]"))
+        five_pm_element = wait.until(
+            EC.presence_of_element_located((By.XPATH, "//*[contains(text(), ' PM')]"))
         )
-        three_pm_position_max = three_pm_element.location['y']
-        print("3 PM found.")
+        maximum_position = five_pm_element.location['y']
+        print("5 PM found.")
     except Exception as e:
-        print(f"3 PM not found or error: {e}")
+        print(f"5 PM not found or error: {e}")
         driver.quit()
         return
 
-    return nine_am_position_min, three_pm_position_max
+    return minimum_position, maximum_position
 
 
 def process_opportunities(nine_am_position, three_pm_position):
@@ -116,7 +116,7 @@ def process_opportunities(nine_am_position, three_pm_position):
     while True:
         time.sleep(2)
         sub_opportunities = driver.find_elements(By.XPATH, "//*[contains(text(),'Sub Opportunity')]")
-        if sub_opportunities and claim_clicks < 3:
+        if sub_opportunities and claim_clicks < 20:
             for sub in sub_opportunities:
                 sub_position = sub.location['y']
                 if nine_am_position < sub_position < three_pm_position:
